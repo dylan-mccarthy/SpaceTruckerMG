@@ -5,6 +5,7 @@ namespace SpaceTrucker.Shared.UI
 {
     public interface IElement
     {
+        public string Name { get; set; }
         void Draw(SpriteBatch spriteBatch);
         void Update(GameTime gameTime);
         void Move(Point point);

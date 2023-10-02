@@ -8,6 +8,7 @@ namespace SpaceTrucker.Shared.UI
 
     public class PanelHeader : IPanel
     {
+        public string Name { get; set; }
         public IPanel Parent { get; set; }
         private List<IElement> _elements;
         private Texture2D _texture;
@@ -26,9 +27,12 @@ namespace SpaceTrucker.Shared.UI
         public string HeaderText { get; set; }
         public Color HeaderTextColor { get; set; }
 
+        private Rectangle _closeButtonArea;
 
-        public PanelHeader(Rectangle bounds, Game game)
+
+        public PanelHeader(string name, Rectangle bounds, Game game)
         {
+            this.Name = name;
             this._elements = new List<IElement>();
             this._bounds = bounds;
             this._game = game;
@@ -80,14 +84,37 @@ namespace SpaceTrucker.Shared.UI
                     spriteBatch.Draw(this._texture, new Rectangle(this.Parent.Bounds.X, this.Parent.Bounds.Y, this.Parent.Bounds.Width, HeaderSize), Color.White);
                 }
 
-                //Draw Header Text
+                //Draw close button and scale to height of header including border center button vertically
+                var closeButtonTexture = this._game.Content.Load<Texture2D>("UI/icons8-close-48");
+                var closeButtonSize = new Vector2(HeaderSize - (this.BorderSize * 2), HeaderSize - (this.BorderSize * 2));
+                var closeButtonPosition = new Vector2(this.Parent.Bounds.X + this.Parent.Bounds.Width - closeButtonSize.X - this.BorderSize, this.Parent.Bounds.Y + this.BorderSize);
+                spriteBatch.Draw(closeButtonTexture, new Rectangle((int)closeButtonPosition.X, (int)closeButtonPosition.Y, (int)closeButtonSize.X, (int)closeButtonSize.Y), Color.White);
+                _closeButtonArea = new Rectangle((int)closeButtonPosition.X, (int)closeButtonPosition.Y, (int)closeButtonSize.X, (int)closeButtonSize.Y);
+
+                //Draw Header Text align to left and keep within header bounds.
+                //Scale text size if text is too long
                 if (this.HeaderText != null)
                 {
-                    // var font = this._game.Content.Load<SpriteFont>("DefaultFont");
-                    // var textSize = font.MeasureString(this.HeaderText);
-                    // var textPosition = new Vector2(this.Parent.Bounds.X + (this.Parent.Bounds.Width / 2) - (textSize.X / 2), this.Parent.Bounds.Y + (HeaderSize / 2) - (textSize.Y / 2));
-                    // spriteBatch.DrawString(font, this.HeaderText, textPosition, this.HeaderTextColor);
+                    var font = this._game.Content.Load<SpriteFont>("UI/PanelHeaderFont");
+                    var textSize = font.MeasureString(this.HeaderText);
+                    var textPosition = new Vector2(this.Parent.Bounds.X + this.BorderSize, this.Parent.Bounds.Y + (HeaderSize / 2) - (textSize.Y / 2));
+                    if (textSize.X > this.Parent.Bounds.Width - (HeaderSize * 2))
+                    {
+                        //Text is too long
+                        //Scale text size
+                        var scale = (this.Parent.Bounds.Width - (HeaderSize * 2)) / textSize.X;
+                        spriteBatch.DrawString(font, this.HeaderText, textPosition, this.HeaderTextColor, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                    }
+                    else
+                    {
+                        //Text is not too long
+                        //Draw text
+                        spriteBatch.DrawString(font, this.HeaderText, textPosition, this.HeaderTextColor);
+                    }
                 }
+                
+
+
                 spriteBatch.End();
             }
 
@@ -141,6 +168,14 @@ namespace SpaceTrucker.Shared.UI
                 this._dragging = false;
             }
 
+            //Check if mouse is over close button and left click
+            if (this._closeButtonArea.Contains(mouseState.Position) && mouseState.LeftButton == ButtonState.Pressed)
+            {
+                //Mouse is over close button and left click
+                //Remove Parent Panel from UI
+                this.Parent.SetVisability(false);
+            }
+
             foreach (var element in this._elements)
             {
                 element.Update(gameTime);
@@ -171,5 +206,6 @@ namespace SpaceTrucker.Shared.UI
             get => this._bounds;
             set => this._bounds = value;
         }
+        public Game Instance { get; set; }
     }
 }

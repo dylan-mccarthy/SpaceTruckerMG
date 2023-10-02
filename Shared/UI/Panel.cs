@@ -25,45 +25,48 @@ namespace SpaceTrucker.Shared.UI
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            //Draw Panel then Draw Children
-            if (this._texture != null)
+            if (IsVisable)
             {
-                spriteBatch.Begin();
-                //Draw Panel with or without border
-                if (this.HasBorder)
+                //Draw Panel then Draw Children
+                if (this._texture != null)
                 {
-                    //Draw main panel area without border around all sides
-                    spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X + this.BorderSize, this.Bounds.Y + this.BorderSize, this.Bounds.Width - (this.BorderSize * 2), this.Bounds.Height - (this.BorderSize * 2)), Color.White);
-                    
-                    //Draw Border around all sides
-                    //Top
-                    //If panel has PanelHeader draw border below header
-                    var panelHeader = this._elements.Find(x => x.GetType() == typeof(PanelHeader));
-                    if (panelHeader != null)
+                    spriteBatch.Begin();
+                    //Draw Panel with or without border
+                    if (this.HasBorder)
                     {
-                        spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X, this.Bounds.Y + panelHeader.Bounds.Height, this.Bounds.Width, this.BorderSize), this.BorderColor);
+                        //Draw main panel area without border around all sides
+                        spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X + this.BorderSize, this.Bounds.Y + this.BorderSize, this.Bounds.Width - (this.BorderSize * 2), this.Bounds.Height - (this.BorderSize * 2)), Color.White);
+
+                        //Draw Border around all sides
+                        //Top
+                        //If panel has PanelHeader draw border below header
+                        var panelHeader = this._elements.Find(x => x.GetType() == typeof(PanelHeader));
+                        if (panelHeader != null)
+                        {
+                            spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X, this.Bounds.Y + panelHeader.Bounds.Height, this.Bounds.Width, this.BorderSize), this.BorderColor);
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X, this.Bounds.Y, this.Bounds.Width, this.BorderSize), this.BorderColor);
+                        }
+                        //Bottom
+                        spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X, this.Bounds.Y + this.Bounds.Height - this.BorderSize, this.Bounds.Width, this.BorderSize), this.BorderColor);
+                        //Left
+                        spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X, this.Bounds.Y, this.BorderSize, this.Bounds.Height), this.BorderColor);
+                        //Right
+                        spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X + this.Bounds.Width - this.BorderSize, this.Bounds.Y, this.BorderSize, this.Bounds.Height), this.BorderColor);
                     }
                     else
                     {
-                        spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X, this.Bounds.Y, this.Bounds.Width, this.BorderSize), this.BorderColor);
+                        spriteBatch.Draw(this._texture, this.Bounds, Color.White);
                     }
-                    //Bottom
-                    spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X, this.Bounds.Y + this.Bounds.Height - this.BorderSize, this.Bounds.Width, this.BorderSize), this.BorderColor);
-                    //Left
-                    spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X, this.Bounds.Y, this.BorderSize, this.Bounds.Height), this.BorderColor);
-                    //Right
-                    spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X + this.Bounds.Width - this.BorderSize, this.Bounds.Y, this.BorderSize, this.Bounds.Height), this.BorderColor);
+                    spriteBatch.End();
                 }
-                else
-                {
-                    spriteBatch.Draw(this._texture, this.Bounds, Color.White);
-                }
-                spriteBatch.End();
-            }
 
-            foreach (var element in this._elements)
-            {
-                element.Draw(spriteBatch);
+                foreach (var element in this._elements)
+                {
+                    element.Draw(spriteBatch);
+                }
             }
         }
 
@@ -126,7 +129,8 @@ namespace SpaceTrucker.Shared.UI
 
         private List<IElement> _elements;
         private Texture2D _texture;
-        private Game Instance { get; set; }
+        public string Name { get; set; }
+        public Game Instance { get; set; }
         public Rectangle Bounds { get; set; }
         public bool IsVisable { get; set; }
         public bool HasBorder { get; set;}
@@ -135,12 +139,14 @@ namespace SpaceTrucker.Shared.UI
 
         public IPanel Parent { get; set; }
 
-        public Panel(Rectangle bounds, Game instance)
+        public Panel(string name, Rectangle bounds, Game instance)
         {
+            this.Name = name;
             this.Bounds = bounds;
             this._elements = new List<IElement>();
             this._texture = null;
             this.Instance = instance;
+            this.IsVisable = true;
         }
     }
 }
