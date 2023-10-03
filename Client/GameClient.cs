@@ -46,7 +46,7 @@ public class GameClient : Game
 
         var solidGreenTexture = new Texture2D(GraphicsDevice, 1, 1);
         solidGreenTexture.SetData(new Color[] { Color.Green });
-        var panelHeader = new PanelHeader("MainPanelHeader",panel,new Rectangle(0, 0, panel.Bounds.Width, 20), this, true);
+        var panelHeader = new PanelHeader("MainPanelHeader",panel,new Rectangle(0, 0, panel.Bounds.Width, 20), this, true, UIEventHandler);
         panelHeader.SetTexture(solidGreenTexture);
         panelHeader.HeaderSize = 20;
         panelHeader.Parent = panel;
