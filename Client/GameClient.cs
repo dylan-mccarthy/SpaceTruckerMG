@@ -31,10 +31,11 @@ public class GameClient : Game
     {
         // TODO: Add your initialization logic here
         UIEventHandler.RegisterNewEvent("Test button clicked", (sender, EventArgs) => DisplayPopUp(EventArgs as ButtonClickedArgs));
+        UIEventHandler.RegisterNewEvent("Close Window", (sender, EventArgs) => CloseWindow(EventArgs as ButtonClickedArgs));
 
 
 
-        var panel = new Panel("MainPanel", new Rectangle(0, 0, 200, 200), this);
+        var panel = new Panel("MainPanel", new Rectangle(0, 0, 200, 200), this, null);
         //Create solid white texture to fill panel
         var solidTexture = new Texture2D(GraphicsDevice, 1, 1);
         solidTexture.SetData(new Color[] { Color.White });
@@ -45,7 +46,7 @@ public class GameClient : Game
 
         var solidGreenTexture = new Texture2D(GraphicsDevice, 1, 1);
         solidGreenTexture.SetData(new Color[] { Color.Green });
-        var panelHeader = new PanelHeader("MainPanelHeader",new Rectangle(0, 0, 100, 20), this);
+        var panelHeader = new PanelHeader("MainPanelHeader",panel,new Rectangle(0, 0, panel.Bounds.Width, 20), this, true);
         panelHeader.SetTexture(solidGreenTexture);
         panelHeader.HeaderSize = 20;
         panelHeader.Parent = panel;
@@ -72,10 +73,23 @@ public class GameClient : Game
         base.Initialize();
     }
 
+    private void CloseWindow(ButtonClickedArgs buttonClickedArgs)
+    {
+        var panel = buttonClickedArgs.Button.Parent as IPanel;
+        if(panel.Parent != null)
+        {
+            panel.Parent.IsVisable = false;
+        }
+        else
+        {
+            panel.IsVisable = false;
+        }
+    }
+
     private void DisplayPopUp(ButtonClickedArgs buttonClickedArgs)
     {
         //Create Popup Panel in center of screen 
-        var popupPanel = new Panel("PopupPanel",new Rectangle((GraphicsDevice.Viewport.Width / 2) - 100, (GraphicsDevice.Viewport.Height / 2) - 100, 200, 200), this);
+        var popupPanel = new Panel("PopupPanel",new Rectangle((GraphicsDevice.Viewport.Width / 2) - 100, (GraphicsDevice.Viewport.Height / 2) - 100, 200, 200), this, null);
         //Create solid white texture to fill panel
         var solidTexture = new Texture2D(GraphicsDevice, 1, 1);
         solidTexture.SetData(new Color[] { Color.White });
@@ -87,7 +101,7 @@ public class GameClient : Game
 
         var solidGreenTexture = new Texture2D(GraphicsDevice, 1, 1);
         solidGreenTexture.SetData(new Color[] { Color.Green });
-        var panelHeader = new PanelHeader("PopupPanelHeader",new Rectangle(0, 0, 100, 20), this);
+        var panelHeader = new PanelHeader("PopupPanelHeader", popupPanel,new Rectangle(0, 0, 100, 20), this, true);
         panelHeader.SetTexture(solidGreenTexture);
         panelHeader.HeaderSize = 20;
         panelHeader.Parent = popupPanel;

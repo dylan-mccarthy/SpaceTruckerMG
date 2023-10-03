@@ -17,8 +17,6 @@ namespace SpaceTrucker.Shared.UI
         public int BorderSize { get; set; }
         public Color BorderColor { get; set; }
 
-        public IPanel Parent { get; set; }
-
         public delegate void ButtonClickedEventHandler(object sender, EventArgs e);
 
         public void OnButtonClicked(object sender, EventArgs e);

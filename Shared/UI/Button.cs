@@ -19,7 +19,7 @@ namespace SpaceTrucker.Shared.UI
         public bool IsVisable { get; set; }
         public Rectangle Bounds { get; set; }
 
-        public IPanel Parent { get; set; }
+        public IElement Parent { get; set; }
         public bool HasBorder { get; set; }
         public int BorderSize { get; set; }
         public Color BorderColor { get; set; }
@@ -29,6 +29,9 @@ namespace SpaceTrucker.Shared.UI
         public delegate void ButtonClickedEventHandler(object sender, EventArgs e);
 
         private Texture2D _texture;
+
+        public Vector2 TextureSize;
+        public Game Instance { get; set; }
 
         public Button(string name, string text, IPanel parent)
         {
@@ -43,24 +46,31 @@ namespace SpaceTrucker.Shared.UI
             if (this.IsVisable)
             {
                 spriteBatch.Begin();
-                spriteBatch.Draw(_texture, this.Bounds, Color.White);
-                //Draw Text in Center of button both vertically and horizontally
-                var font = Parent.Instance.Content.Load<SpriteFont>("Fonts/Default");
-                var textSize = font.MeasureString(this.Text);
-                var textPosition = new Vector2(this.Bounds.X + (this.Bounds.Width / 2) - (textSize.X / 2), this.Bounds.Y + (this.Bounds.Height / 2) - (textSize.Y / 2));
-                spriteBatch.DrawString(font, this.Text, textPosition, Color.Black);
+                Rectangle drawRect;
 
+                drawRect = this.Bounds;
+                
+                //Draw Button in relation to parent
+                spriteBatch.Draw(_texture, drawRect, Color.White);
+                if (Text != "")
+                {
+                    //Draw Text in Center of button both vertically and horizontally
+                    var font = Parent.Instance.Content.Load<SpriteFont>("Fonts/Default");
+                    var textSize = font.MeasureString(this.Text);
+                    var textPosition = new Vector2(drawRect.X + (drawRect.Width / 2) - (textSize.X / 2), drawRect.Y + (drawRect.Height / 2) - (textSize.Y / 2));
+                    spriteBatch.DrawString(font, this.Text, textPosition, Color.Black);
+                }
                 //Draw Border around all sides
                 if (this.HasBorder)
                 {
                     //Top
-                    spriteBatch.Draw(_texture, new Rectangle(this.Bounds.X, this.Bounds.Y, this.Bounds.Width, this.BorderSize), this.BorderColor);
+                    spriteBatch.Draw(_texture, new Rectangle(drawRect.X, drawRect.Y, drawRect.Width, this.BorderSize), this.BorderColor);
                     //Bottom
-                    spriteBatch.Draw(_texture, new Rectangle(this.Bounds.X, this.Bounds.Y + this.Bounds.Height - this.BorderSize, this.Bounds.Width, this.BorderSize), this.BorderColor);
+                    spriteBatch.Draw(_texture, new Rectangle(drawRect.X, drawRect.Y + drawRect.Height - this.BorderSize, drawRect.Width, this.BorderSize), this.BorderColor);
                     //Left
-                    spriteBatch.Draw(_texture, new Rectangle(this.Bounds.X, this.Bounds.Y, this.BorderSize, this.Bounds.Height), this.BorderColor);
+                    spriteBatch.Draw(_texture, new Rectangle(drawRect.X, drawRect.Y, this.BorderSize, drawRect.Height), this.BorderColor);
                     //Right
-                    spriteBatch.Draw(_texture, new Rectangle(this.Bounds.X + this.Bounds.Width - this.BorderSize, this.Bounds.Y, this.BorderSize, this.Bounds.Height), this.BorderColor);
+                    spriteBatch.Draw(_texture, new Rectangle(drawRect.X + drawRect.Width - this.BorderSize, drawRect.Y, this.BorderSize, drawRect.Height), this.BorderColor);
                 }
                 spriteBatch.End();
             }
@@ -104,36 +114,21 @@ namespace SpaceTrucker.Shared.UI
 
         public void Move(Point point)
         {
-            //Move Button and limit to Parent Panel Bounds
-            if (this.Parent != null)
-            {
-                if (point.X < this.Parent.Bounds.X)
-                {
-                    point.X = this.Parent.Bounds.X;
-                }
-                if (point.Y < this.Parent.Bounds.Y)
-                {
-                    point.Y = this.Parent.Bounds.Y;
-                }
-                if (point.X > this.Parent.Bounds.X + this.Parent.Bounds.Width - this.Bounds.Width)
-                {
-                    point.X = this.Parent.Bounds.X + this.Parent.Bounds.Width - this.Bounds.Width;
-                }
-                if (point.Y > this.Parent.Bounds.Y + this.Parent.Bounds.Height - this.Bounds.Height)
-                {
-                    point.Y = this.Parent.Bounds.Y + this.Parent.Bounds.Height - this.Bounds.Height;
-                }
-            }
+            this.Bounds = new Rectangle(point.X, point.Y, this.Bounds.Width, this.Bounds.Height);
         }
 
         public void SetTexture(string textureName)
         {
             _texture = Parent.Instance.Content.Load<Texture2D>(textureName);
+            //Set Texture Size
+            this.TextureSize = new Vector2(_texture.Width, _texture.Height);
         }
 
         public void SetTexture(Texture2D texture)
         {
             _texture = texture;
+            //Set Texture Size
+            this.TextureSize = new Vector2(_texture.Width, _texture.Height);
         }
 
         public void SetVisability(bool visable)

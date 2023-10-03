@@ -10,7 +10,7 @@ namespace SpaceTrucker.Client
         public string Text { get; set; }
         public bool IsVisable { get; set; }
         public Rectangle Bounds { get; set; }
-        public IPanel Parent { get; set; }
+        public IElement Parent { get; set; }
         public Game Instance { get; set; }
         public SpriteFont Font { get; set; }
         public Color Color { get; set; }
@@ -51,6 +51,11 @@ namespace SpaceTrucker.Client
         public void Update(GameTime gameTime)
         {
            
-        }   
+        }
+
+        public Point GetRootNodePos()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

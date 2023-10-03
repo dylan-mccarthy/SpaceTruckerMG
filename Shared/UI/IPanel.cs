@@ -7,8 +7,5 @@ namespace SpaceTrucker.Shared.UI
     {
         void AddElement(IElement element);
         void RemoveElement(IElement element);
-
-        IPanel Parent { get; set; }
-        Game Instance { get; set; }
     }
 }

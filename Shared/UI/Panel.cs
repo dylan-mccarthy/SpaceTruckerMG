@@ -8,9 +8,27 @@ namespace SpaceTrucker.Shared.UI
 {
     public class Panel : IPanel
     {
-        public Panel()
+        private List<IElement> _elements;
+        private Texture2D _texture;
+        public string Name { get; set; }
+        public Game Instance { get; set; }
+        public Rectangle Bounds { get; set; }
+        public bool IsVisable { get; set; }
+        public bool HasBorder { get; set; }
+        public int BorderSize { get; set; }
+        public Color BorderColor { get; set; }
+
+        public IElement Parent { get; set; }
+
+        public Panel(string name, Rectangle bounds, Game instance, IElement Parent)
         {
+            this.Name = name;
+            this.Bounds = bounds;
             this._elements = new List<IElement>();
+            this._texture = null;
+            this.Instance = instance;
+            this.IsVisable = true;
+            this.Parent = Parent;
         }
 
         public void AddElement(IElement element)
@@ -30,31 +48,37 @@ namespace SpaceTrucker.Shared.UI
                 //Draw Panel then Draw Children
                 if (this._texture != null)
                 {
+                    var drawRect = this.Bounds;
+
                     spriteBatch.Begin();
                     //Draw Panel with or without border
                     if (this.HasBorder)
                     {
                         //Draw main panel area without border around all sides
-                        spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X + this.BorderSize, this.Bounds.Y + this.BorderSize, this.Bounds.Width - (this.BorderSize * 2), this.Bounds.Height - (this.BorderSize * 2)), Color.White);
+                        spriteBatch.Draw(this._texture, drawRect, Color.White);
 
                         //Draw Border around all sides
                         //Top
                         //If panel has PanelHeader draw border below header
-                        var panelHeader = this._elements.Find(x => x.GetType() == typeof(PanelHeader));
-                        if (panelHeader != null)
-                        {
-                            spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X, this.Bounds.Y + panelHeader.Bounds.Height, this.Bounds.Width, this.BorderSize), this.BorderColor);
-                        }
-                        else
-                        {
-                            spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X, this.Bounds.Y, this.Bounds.Width, this.BorderSize), this.BorderColor);
-                        }
+                        //var panelHeader = this._elements.Find(x => x.GetType() == typeof(PanelHeader));
+                        //if (panelHeader != null)
+                        //{
+                        //    spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X, this.Bounds.Y + panelHeader.Bounds.Height, this.Bounds.Width, this.BorderSize), this.BorderColor);
+                        //}
+                        //else
+                        //{
+                        //    spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X, this.Bounds.Y, this.Bounds.Width, this.BorderSize), this.BorderColor);
+                        //}
+
+                        //Draw Borders
+                        //Top
+                        spriteBatch.Draw(this._texture, new Rectangle(drawRect.X, drawRect.Y, drawRect.Width, this.BorderSize), this.BorderColor);
                         //Bottom
-                        spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X, this.Bounds.Y + this.Bounds.Height - this.BorderSize, this.Bounds.Width, this.BorderSize), this.BorderColor);
+                        spriteBatch.Draw(this._texture, new Rectangle(drawRect.X, drawRect.Y + drawRect.Height - this.BorderSize, drawRect.Width, this.BorderSize), this.BorderColor);
                         //Left
-                        spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X, this.Bounds.Y, this.BorderSize, this.Bounds.Height), this.BorderColor);
+                        spriteBatch.Draw(this._texture, new Rectangle(drawRect.X, drawRect.Y, this.BorderSize, drawRect.Height), this.BorderColor);
                         //Right
-                        spriteBatch.Draw(this._texture, new Rectangle(this.Bounds.X + this.Bounds.Width - this.BorderSize, this.Bounds.Y, this.BorderSize, this.Bounds.Height), this.BorderColor);
+                        spriteBatch.Draw(this._texture, new Rectangle(drawRect.X + drawRect.Width - this.BorderSize, drawRect.Y, this.BorderSize, drawRect.Height), this.BorderColor);
                     }
                     else
                     {
@@ -68,6 +92,19 @@ namespace SpaceTrucker.Shared.UI
                     element.Draw(spriteBatch);
                 }
             }
+        }
+
+        public Point GetRootNodePos()
+        {
+            Point position = new Point();
+            IElement current = this;
+            while (current != null && current.Parent != null)
+            {
+                position.X += current.Bounds.X;
+                position.Y += current.Bounds.Y;
+                current = current.Parent;
+            }
+            return position;
         }
 
         public void Update(GameTime gameTime)
@@ -106,12 +143,17 @@ namespace SpaceTrucker.Shared.UI
             {
                 point.Y = this.Instance.GraphicsDevice.Viewport.Height - this.Bounds.Height;
             }
-            this.Bounds = new Rectangle(point.X, point.Y, this.Bounds.Width, this.Bounds.Height);
 
+            //Calculate new positions for all children
+            var oldPosition = this.Bounds.Location;
+            var newPosition = point;
+            var delta = new Point(newPosition.X - oldPosition.X, newPosition.Y - oldPosition.Y);
             foreach (var element in this._elements)
             {
-                element.Move(point);
+                element.Move(new Point(element.Bounds.X + delta.X, element.Bounds.Y + delta.Y));
             }
+
+            this.Bounds = new Rectangle(point.X, point.Y, this.Bounds.Width, this.Bounds.Height);
         }
 
         public void SetVisability(bool visable)
@@ -127,26 +169,5 @@ namespace SpaceTrucker.Shared.UI
             }
         }
 
-        private List<IElement> _elements;
-        private Texture2D _texture;
-        public string Name { get; set; }
-        public Game Instance { get; set; }
-        public Rectangle Bounds { get; set; }
-        public bool IsVisable { get; set; }
-        public bool HasBorder { get; set;}
-        public int BorderSize { get; set; }
-        public Color BorderColor { get; set; }
-
-        public IPanel Parent { get; set; }
-
-        public Panel(string name, Rectangle bounds, Game instance)
-        {
-            this.Name = name;
-            this.Bounds = bounds;
-            this._elements = new List<IElement>();
-            this._texture = null;
-            this.Instance = instance;
-            this.IsVisable = true;
-        }
     }
 }
