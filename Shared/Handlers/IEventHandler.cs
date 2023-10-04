@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Client.Handlers
+namespace SpaceTrucker.Shared.Handlers
 {
-    internal class GameEventHandler
+    public interface IEventHandler
     {
     }
 }

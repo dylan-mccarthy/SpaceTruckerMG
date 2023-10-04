@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SpaceTrucker.Shared.Handlers;
 
 namespace SpaceTrucker.Shared.UI
 {
@@ -50,7 +51,7 @@ namespace SpaceTrucker.Shared.UI
                 closeButton.Bounds = new Rectangle(_bounds.Width - (int)buttonSize.X/2, 0, (int)buttonSize.X/2, (int)buttonSize.Y/2);
                 closeButton.HasBorder = false;
                 closeButton.IsVisable = true;
-                closeButton.OnButtonClicked += (sender, EventArgs) => eventHandler.Connect("Close Window", sender, EventArgs);
+                closeButton.ButtonClicked += (sender, EventArgs) => eventHandler.Connect("Close Window", sender, EventArgs);
                 _elements.Add(closeButton);
                 _closeButtonArea = closeButton.Bounds;
             }

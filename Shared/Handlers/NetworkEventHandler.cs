@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpaceTrucker.Client.Handlers
+namespace SpaceTrucker.Shared.Handlers
 {
-    public interface IEventHandler
+    internal class NetworkEventHandler
     {
     }
 }

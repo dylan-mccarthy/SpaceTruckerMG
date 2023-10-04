@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SpaceTrucker.Client.Handlers;
+using SpaceTrucker.Shared.Handlers;
 using SpaceTrucker.Shared.UI;
 using System;
 using System.Collections.Concurrent;
@@ -101,7 +101,7 @@ public class GameClient : Game
 
         var solidGreenTexture = new Texture2D(GraphicsDevice, 1, 1);
         solidGreenTexture.SetData(new Color[] { Color.Green });
-        var panelHeader = new PanelHeader("PopupPanelHeader", popupPanel,new Rectangle(0, 0, 100, 20), this, true);
+        var panelHeader = new PanelHeader("PopupPanelHeader", popupPanel,new Rectangle(0, 0, 100, 20), this, true, UIEventHandler);
         panelHeader.SetTexture(solidGreenTexture);
         panelHeader.HeaderSize = 20;
         panelHeader.Parent = popupPanel;

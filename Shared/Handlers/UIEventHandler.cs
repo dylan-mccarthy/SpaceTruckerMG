@@ -1,11 +1,11 @@
-﻿using Client.Handlers;
+﻿using SpaceTrucker.Shared.Handlers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpaceTrucker.Client.Handlers
+namespace SpaceTrucker.Shared.Handlers
 {
     public class UIEventHandler : IEventHandler
     {
