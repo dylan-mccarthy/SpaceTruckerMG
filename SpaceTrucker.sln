@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{B1D07AE4-1CE3-4ABB-A90B-79A01EB2ADB9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeadlessClient", "HeadlessClient\HeadlessClient.csproj", "{5DD24230-CDB7-4BBC-A524-90BD7A3AA77F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B1D07AE4-1CE3-4ABB-A90B-79A01EB2ADB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1D07AE4-1CE3-4ABB-A90B-79A01EB2ADB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1D07AE4-1CE3-4ABB-A90B-79A01EB2ADB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DD24230-CDB7-4BBC-A524-90BD7A3AA77F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DD24230-CDB7-4BBC-A524-90BD7A3AA77F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DD24230-CDB7-4BBC-A524-90BD7A3AA77F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DD24230-CDB7-4BBC-A524-90BD7A3AA77F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
